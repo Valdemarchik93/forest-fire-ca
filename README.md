@@ -64,7 +64,6 @@ forest-fire-ca/
 │   └── main.py         # точка входа
 ├── tests/
 │   └── test_model.py   # тесты
-├── docs/               # отчёт
 ├── requirements.txt
 └── README.md
 ```
