@@ -152,6 +152,7 @@ class Statistics:
         self.a_e.append(int(np.sum(ca == CellState.EMPTY.value)))
         self.states.append(np.copy(ca))
 
+
 def update_cell(ca, cell, neighbors, burning_time):
     """
     Определяет новое состояние клетки на основе текущего состояния и соседей.
@@ -211,3 +212,33 @@ def update_cell(ca, cell, neighbors, burning_time):
             ]
             return rs.choice(veg_types, p=[0.4, 0.4, 0.2]).value
         return CellState.EMPTY.value
+
+
+def simulate(ca, neighborhood_type, time_steps):
+    """
+    Запускает симуляцию клеточного автомата.
+    
+    Параметры:
+    - ca: начальное поле
+    - neighborhood_type: NeighborhoodType.CROSS или NEUMAN
+    - time_steps: число шагов
+    
+    Возвращает:
+    - объект Statistics со всей историей
+    """
+    st = Statistics()
+    st.append(0, ca)                     # начальное состояние
+    
+    for t in range(1, time_steps + 1):
+        new_ca = np.copy(ca)             # копия для синхронного обновления
+        h, w = ca.shape
+        
+        for i in range(h):
+            for j in range(w):
+                neighbors = get_neighbors((i, j), (h, w), neighborhood_type)
+                new_ca[i, j] = update_cell(ca, (i, j), neighbors, st.burning_time)
+        
+        ca = new_ca
+        st.append(t, ca)
+    
+    return st
