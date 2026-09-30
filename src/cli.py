@@ -14,6 +14,7 @@ from src.visualize import (
     plot_neighborhood_comparison,
     plot_vegetation_dynamics,
     plot_burn_rates,
+    create_fire_gif_and_frame,
 )
 
 
@@ -32,19 +33,19 @@ def cli():
 def run(width, height, steps, output, seed):
     """Запускает все сценарии и сохраняет графики."""
     rs.seed(seed)
-    
+
     click.echo(f"Запуск симуляции: {width}×{height}, {steps} шагов")
-    
+
     os.makedirs(output, exist_ok=True)
-    
+
     results = run_all_scenarios(
         width=width,
         height=height,
         time_steps=steps,
     )
-    
+
     click.echo(f"Сценариев: {len(results)}")
-    
+
     # Графики
     plots = {
         "dynamics.png": plot_fire_dynamics(results),
@@ -52,13 +53,25 @@ def run(width, height, steps, output, seed):
         "vegetation.png": plot_vegetation_dynamics(results),
         "burn_rates.png": plot_burn_rates(results),
     }
-    
+
     for name, fig in plots.items():
         path = os.path.join(output, name)
         fig.savefig(path, dpi=100, bbox_inches="tight")
         plt.close(fig)
         click.echo(f"  Сохранён: {path}")
-    
+
+    # GIF-анимация пожара + один кадр для отчёта
+    click.echo("\nСоздание GIF-анимации пожара...")
+    nt_first = list(results.keys())[0][0]
+    create_fire_gif_and_frame(
+        results,
+        nt=nt_first,
+        f=1,
+        gif_path=os.path.join(output, "fire_animation.gif"),
+        frame_path=os.path.join(output, "fire_frame.png"),
+        frame_step=100,
+    )
+
     # Сводка
     click.echo("\n=== Сводка ===")
     for (nt, f), st in results.items():

@@ -10,11 +10,19 @@ __pycache__/
 .pytest_cache/
 
 # Результаты
-*.gif
-*.png
-*.pdf
-*.csv
-results/
+# *.gif
+# *.png
+# *.pdf
+# *.csv
+# results/
+
+# Исключения — эти файлы коммитим
+!results/fire_animation.gif
+!results/fire_frame.png
+!results/dynamics.png
+!results/comparison.png
+!results/vegetation.png
+!results/burn_rates.png
 
 # IDE
 .vscode/
@@ -23,3 +31,8 @@ results/
 # ОС
 .DS_Store
 Thumbs.db
+
+!results/fire_animation.gif
+!results/fire_frame.png
+
+results_test/
